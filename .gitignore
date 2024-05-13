@@ -3,6 +3,8 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+not_for_submission/
+
 # C extensions
 *.so
 
