@@ -54,6 +54,24 @@ def search_flights(airports, outbound_date, return_date, max_price):
     flights = best_flights + other_flights
     return min(flights, key=lambda x: x["price"]) if flights else None
 
+# this function calls on the api search while there are less than 5 valid destinations
+def get_valid_destinations(month, trip_type, outbound_date, return_date, budget):
+    seen_destinations = []
+    destinations = {}
+
+    # continues search while there are less than 5 destinations fitting the search parameters
+    while len(destinations) < 5:
+        destination = get_trip_suggestion(seen_destinations, month, trip_type)
+        seen_destinations.append(destination)
+        airports = search_airports(destination)
+        flight_info = search_flights(airports, outbound_date, return_date, budget)
+        if flight_info:
+            print(f"Cheapest flight to {destination}: {flight_info['price']} USD") 
+            destinations[destination] = flight_info  
+
+    return destinations          
+
+
 # this function asks the user for the trip parameters and performs the search. retrieves the destinations the are within trip parameters
 def plan_trip(debug=False):
     if debug: 
@@ -72,18 +90,7 @@ def plan_trip(debug=False):
     outbound_date = datetime.strptime(start_date, "%Y-%m-%d").strftime("%Y-%m-%d")
     return_date = datetime.strptime(end_date, "%Y-%m-%d").strftime("%Y-%m-%d")
 
-    seen_destinations = []
-    destinations = {}
-
-    # continues search while there are less than 5 destinations fitting the search parameters
-    while len(destinations) < 5:
-        destination = get_trip_suggestion(seen_destinations, month, trip_type)
-        seen_destinations.append(destination)
-        airports = search_airports(destination)
-        flight_info = search_flights(airports, outbound_date, return_date, budget)
-        if flight_info:
-            print(f"Cheapest flight to {destination}: {flight_info['price']} USD") 
-            destinations[destination] = flight_info     
+    destinations = get_valid_destinations(month, trip_type, outbound_date, return_date, budget)
 
     print(destinations)          
 
