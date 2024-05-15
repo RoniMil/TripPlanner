@@ -141,11 +141,6 @@ def plan_trip(start_date: str, end_date: str, budget: str, trip_type: str):
         end_date = "2024-06-24"
         budget = "2000"
         trip_type = "beach"
-    else:
-        start_date = input("Enter the start date of your trip (YYYY-MM-DD): ")
-        end_date = input("Enter the end date of your trip (YYYY-MM-DD): ")
-        budget = float(input("Enter your total budget in USD: "))
-        trip_type = input("Enter the type of trip (ski/beach/city): ")
 
     month = datetime.strptime(start_date, "%Y-%m-%d").strftime("%B")
 
