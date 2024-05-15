@@ -10,6 +10,7 @@ export default function Home() {
   });
 
   const [destinations, setDestinations] = useState([]);
+  const [selectedDestination, setSelectedDestination] = useState(null);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -22,9 +23,17 @@ export default function Home() {
       const response = await fetch(apiURL);
       const data = await response.json();
       setDestinations(Object.entries(data));
+      setSelectedDestination(null);  // Reset selection on new search
     } catch (error) {
       console.error('Error fetching destinations:', error);
     }
+  };
+
+  const handleSelectDestination = (destination) => {
+    setSelectedDestination(destination);
+    // Further actions can be added here, such as displaying more details
+    // or calling another API for detailed planning
+    console.log("Selected destination:", destination);
   };
 
   return (
@@ -46,8 +55,16 @@ export default function Home() {
           <p>Flight Info: {info[0]}</p>
           <p>Hotel Info: {info[1]}</p>
           <p>Price: {info[2]}</p>
+          <button onClick={() => handleSelectDestination(destination)}>Select This Destination</button>
         </div>
       ))}
+      {selectedDestination && (
+        <div>
+          <h3>Selected Destination: {selectedDestination}</h3>
+          {/* Additional components or details could be rendered here */}
+        </div>
+      )}
     </div>
   );
 }
+
