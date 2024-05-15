@@ -1,6 +1,11 @@
 import requests
 from datetime import datetime
 import re
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+
+# start api
+app = FastAPI()
 
 OPENAI_API_KEY = "sk-proj-qBbquYjeeRcbwcs8C1IHT3BlbkFJLZHyfNMDcKE3xW9wWaNr"
 SERPAPI_API_KEY = "7d278715b0f786d37f8acd830faf6519cfe97706360de96564488c2f9593edbd"
@@ -126,7 +131,8 @@ def get_valid_trips(
 
 
 # this function asks the user for the trip parameters and performs the search. retrieves the destinations the are within trip parameters
-def plan_trip(debug=False):
+@app.get("/")
+def plan_trip(debug=True):
     if debug:
         start_date = "2024-06-10"
         end_date = "2024-06-24"
@@ -160,6 +166,7 @@ def plan_trip(debug=False):
         trips = get_valid_trips(
             month, trip_type, outbound_date_str, return_date_str, total_days, budget
         )
+    return trips
 
-if __name__ == "__main__":
-    plan_trip(debug=True)
+# if __name__ == "__main__":
+#     plan_trip(debug=True)
