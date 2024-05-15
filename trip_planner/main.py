@@ -148,12 +148,6 @@ def get_valid_trips(
 def plan_trip(start_date: str, end_date: str, budget: str, trip_type: str):
     debug = True
 
-    if debug:
-        start_date = "2024-06-10"
-        end_date = "2024-06-24"
-        budget = "2000"
-        trip_type = "beach"
-
     month = datetime.strptime(start_date, "%Y-%m-%d").strftime("%B")
 
     outbound_date = datetime.strptime(start_date, "%Y-%m-%d")
@@ -166,11 +160,11 @@ def plan_trip(start_date: str, end_date: str, budget: str, trip_type: str):
 
     if debug:
         trips = {
-            "Duckville": ("Flight 101", "Quack Inn", 1500),
-            "Pondtown": ("Flight 202", "Duck Pond Resort", 1800),
-            "Featherton": ("Flight 303", "Feather Nest Hotel", 1999),
-            "Mallard Meadows": ("Flight 404", "Mallard Mansion", 1750),
-            "Beak City": ("Flight 505", "Beak Boulevard Suites", 1600),
+            "Barcelona": ("Flight 101", "Quack Inn", 1500),
+            "New York": ("Flight 202", "Duck Pond Resort", 1800),
+            "Rome": ("Flight 303", "Feather Nest Hotel", 1999),
+            "Paris": ("Flight 404", "Mallard Mansion", 1750),
+            "Los Angeles": ("Flight 505", "Beak Boulevard Suites", 1600),
         }
     else:
         trips = get_valid_trips(

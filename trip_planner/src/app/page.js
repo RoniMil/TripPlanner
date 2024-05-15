@@ -1,5 +1,6 @@
 'use client'
 import { useState } from 'react';
+const OPENAI_API_KEY = "sk-proj-qBbquYjeeRcbwcs8C1IHT3BlbkFJLZHyfNMDcKE3xW9wWaNr"
 
 export default function Home() {
   const [formData, setFormData] = useState({
@@ -11,6 +12,7 @@ export default function Home() {
 
   const [destinations, setDestinations] = useState([]);
   const [selectedDestination, setSelectedDestination] = useState(null);
+  const [tripPlan, setTripPlan] = useState("");
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -29,11 +31,34 @@ export default function Home() {
     }
   };
 
-  const handleSelectDestination = (destination) => {
+  const handleSelectDestination = async (destination) => {
     setSelectedDestination(destination);
-    // Further actions can be added here, such as displaying more details
-    // or calling another API for detailed planning
-    console.log("Selected destination:", destination);
+    // Assuming the API key is stored in an environment variable for development purposes
+    const apiKey = OPENAI_API_KEY;
+    const prompt = `Create a daily plan for a trip to ${destination} from ${formData.startDate} to ${formData.endDate}.`;
+
+    try {
+      const response = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${apiKey}`
+        },
+        body: JSON.stringify({
+          model: "gpt-3.5-turbo",
+          messages: [
+            {
+              role: "user",
+              content: prompt
+            }
+          ]
+        })
+      });
+      const data = await response.json();
+      setTripPlan(data.choices[0].message['content']);
+    } catch (error) {
+      console.error('Error fetching daily plan:', error);
+    }
   };
 
   return (
@@ -61,10 +86,11 @@ export default function Home() {
       {selectedDestination && (
         <div>
           <h3>Selected Destination: {selectedDestination}</h3>
-          {/* Additional components or details could be rendered here */}
+          <p>Daily Plan: {tripPlan}</p>
         </div>
       )}
     </div>
   );
 }
+
 
