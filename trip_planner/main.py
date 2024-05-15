@@ -7,6 +7,18 @@ from fastapi.middleware.cors import CORSMiddleware
 # start api
 app = FastAPI()
 
+origins = [
+    "http://localhost:3000",  # The origin of your Next.js frontend
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],  # Allows all methods
+    allow_headers=["*"],  # Allows all headers
+)
+
 OPENAI_API_KEY = "sk-proj-qBbquYjeeRcbwcs8C1IHT3BlbkFJLZHyfNMDcKE3xW9wWaNr"
 SERPAPI_API_KEY = "7d278715b0f786d37f8acd830faf6519cfe97706360de96564488c2f9593edbd"
 SEARCH_PROMPT = "suggest me a place to visit in the month: {month} and for the trip type: {trip_type}. return only the location AS A STRING without further information. THE PLACE MUST NOT BE IN THE FOLLOWING LIST: {cur_locations}"
