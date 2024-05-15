@@ -71,7 +71,7 @@ export default function Home() {
         },
         body: JSON.stringify({
           model: "dall-e-2",
-          prompt: prompt,
+          prompt: `This is my trip plan, give me 4 pictures that best describe the trip. My trip plan: ${prompt}`,
           n: 4, // Generate 4 images
         })
       });
@@ -81,6 +81,13 @@ export default function Home() {
       console.error('Error fetching images:', error);
       return [];
     }
+  };
+
+  // Helper function to format the trip plan with HTML line breaks
+  const formatTripPlan = (plan) => {
+    return plan.split('\n').map((line, index) => (
+      <p key={index}>{line}</p>
+    ));
   };
 
   return (
@@ -107,8 +114,9 @@ export default function Home() {
       ))}
       {selectedDestination && (
         <div>
-          <h3>Selected Destination: {selectedDestination}</h3>
-          <p>Daily Plan: {tripPlan}</p>
+          <h2>Selected Destination: {selectedDestination}</h2>
+          <h3>Your Trip Plan:</h3><br></br>
+          <div>{formatTripPlan(tripPlan)}</div><br></br>
           <h3>Your trip will look like this:</h3>
           <div>
             {images.map((image, index) => (

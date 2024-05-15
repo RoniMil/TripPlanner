@@ -3,6 +3,7 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+.vscode
 not_for_submission/
 
 # C extensions
