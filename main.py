@@ -131,8 +131,11 @@ def get_valid_trips(
 
 
 # this function asks the user for the trip parameters and performs the search. retrieves the destinations the are within trip parameters
+# call for example http://127.0.0.1:8000/?start_date=1&end_date=2&budget=3&trip_type=4
 @app.get("/")
-def plan_trip(debug=True):
+def plan_trip(start_date: str, end_date: str, budget: str, trip_type: str):
+    debug = True
+
     if debug:
         start_date = "2024-06-10"
         end_date = "2024-06-24"
@@ -167,6 +170,3 @@ def plan_trip(debug=True):
             month, trip_type, outbound_date_str, return_date_str, total_days, budget
         )
     return trips
-
-# if __name__ == "__main__":
-#     plan_trip(debug=True)
