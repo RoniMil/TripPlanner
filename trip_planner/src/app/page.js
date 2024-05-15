@@ -1,6 +1,7 @@
 'use client'
 import { useState } from 'react';
-const OPENAI_API_KEY = "sk-proj-qBbquYjeeRcbwcs8C1IHT3BlbkFJLZHyfNMDcKE3xW9wWaNr"
+
+const OPENAI_API_KEY = "sk-proj-qBbquYjeeRcbwcs8C1IHT3BlbkFJLZHyfNMDcKE3xW9wWaNr";
 
 export default function Home() {
   const [formData, setFormData] = useState({
@@ -13,6 +14,7 @@ export default function Home() {
   const [destinations, setDestinations] = useState([]);
   const [selectedDestination, setSelectedDestination] = useState(null);
   const [tripPlan, setTripPlan] = useState("");
+  const [images, setImages] = useState([]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -34,34 +36,52 @@ export default function Home() {
   const handleSelectDestination = async (destination) => {
     setSelectedDestination(destination);
     setDestinations([]); // Clear all other destinations
-  
-    const apiKey = OPENAI_API_KEY;
-    const prompt = `Create a daily plan for a trip to ${destination} from ${formData.startDate} to ${formData.endDate}.`;
-  
+
+    const tripPrompt = `Create a daily plan for a trip to ${destination} from ${formData.startDate} to ${formData.endDate}. Please give the plan in a list where each element is a day. SEPARATE EACH DAY WITH A NEWLINE.`;
+
     try {
-      const response = await fetch('https://api.openai.com/v1/chat/completions', {
+      const planResponse = await fetch('https://api.openai.com/v1/chat/completions', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${apiKey}`
+          'Authorization': `Bearer ${OPENAI_API_KEY}`
         },
         body: JSON.stringify({
           model: "gpt-3.5-turbo",
-          messages: [
-            {
-              role: "user",
-              content: prompt
-            }
-          ]
+          messages: [{ role: "user", content: tripPrompt }]
+        })
+      });
+      const planData = await planResponse.json();
+      setTripPlan(planData.choices[0].message['content']);
+      const imagePrompts = `Images depicting ${formData.tripType} trip to ${destination} from ${formData.startDate} to ${formData.endDate}`;
+      const images = await fetchImages(imagePrompts);
+      setImages(images);  // Assuming you have a state to store images
+    } catch (error) {
+      console.error('Error fetching daily plan or images:', error);
+    }
+  };
+
+  const fetchImages = async (prompt) => {
+    try {
+      const response = await fetch('https://api.openai.com/v1/images/generations', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${OPENAI_API_KEY}`
+        },
+        body: JSON.stringify({
+          model: "dall-e-2",
+          prompt: prompt,
+          n: 4, // Generate 4 images
         })
       });
       const data = await response.json();
-      setTripPlan(data.choices[0].message['content']);
+      return data.data.map(image => image.url);  // Assuming API returns URLs of images
     } catch (error) {
-      console.error('Error fetching daily plan:', error);
+      console.error('Error fetching images:', error);
+      return [];
     }
   };
-  
 
   return (
     <div>
@@ -89,10 +109,14 @@ export default function Home() {
         <div>
           <h3>Selected Destination: {selectedDestination}</h3>
           <p>Daily Plan: {tripPlan}</p>
+          <h3>Your trip will look like this:</h3>
+          <div>
+            {images.map((image, index) => (
+              <img key={index} src={image} alt="Trip Image" />
+            ))}
+          </div>
         </div>
       )}
     </div>
   );
 }
-
-
