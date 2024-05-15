@@ -13,7 +13,7 @@ origins = [
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=["*"],  # Allows all origins,
     allow_credentials=True,
     allow_methods=["*"],  # Allows all methods
     allow_headers=["*"],  # Allows all headers
@@ -115,7 +115,7 @@ def get_valid_trips(
     trips = {}
 
     # continues search while there are less than 5 trips fitting the search parameters
-    while len(trips) < 5:
+    while len(trips) < 1:
         destination = get_trip_suggestion(seen_destinations, month, trip_type)
         seen_destinations.append(destination)
         airports = search_airports(destination)

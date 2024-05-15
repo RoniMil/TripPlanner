@@ -109,7 +109,7 @@ export default function Home() {
         <ul style={{ listStyle: 'none', padding: 0 }}>
           {flights.map((flight, index) => (
             <li key={index} style={{ marginBottom: '20px', border: '1px solid #ccc', padding: '10px' }}>
-              <h2 style={{ color: '#0056b3' }}>Flight Number: {flight.flight_number}</h2>
+              <h2 style={{ color: '#ff00ff' }}>Flight Number: {flight.flight_number}</h2>
               <div>
                 <strong>Departure:</strong>
                 <ul>
@@ -166,8 +166,8 @@ export default function Home() {
         <button type="submit">Plan Trip</button>
       </form>
       {destinations.map(([destination, info], index) => (
-        <div key={index}>
-          <h2>{destination}</h2>
+        <div style={{ marginBottom: '20px', padding: '10px' }} key={index}>
+          <h2>{index + 1}. {destination}</h2>
           <p>{formatFlights(info[0])}</p>
           <p>{formatHotel(info[1])}</p>
           <h1>Price: {info[2]}</h1>
