@@ -71,7 +71,7 @@ export default function Home() {
         body: JSON.stringify({
           model: "dall-e-2",
           prompt: `This is my trip plan, give me 4 pictures that best describe the trip. My trip plan: ${prompt}`,
-          n: 4, // Generate 4 images
+          n: 4 // Generate 4 images
         })
       });
       const data = await response.json();
@@ -82,57 +82,74 @@ export default function Home() {
     }
   };
 
-// Helper function to format the trip plan with HTML line breaks
-const formatTripPlan = (plan) => {
-  return (
-    <>
-      {Object.entries(plan).map(([day, activities], index) => (
-        <div key={index}>
-          <strong>{day}</strong>
-          <ul>
-            {activities.map((activity, idx) => (
-              <li key={idx}>{activity}</li>
-            ))}
-          </ul>
-          <br /> {/* Add a line break after each day's list for better separation */}
-        </div>
-      ))}
-    </>
-  );
-};
-
-// Helper function to format the trip plan with HTML line breaks
-function formatFlights(flights) {
-  return (
-    <div style={{ padding: '20px', fontFamily: 'Arial, sans-serif' }}>
-      <h1>Flight Details</h1>
-      <ul style={{ listStyle: 'none', padding: 0 }}>
-        {flights.map((flight, index) => (
-          <li key={index} style={{ marginBottom: '20px', border: '1px solid #ccc', padding: '10px' }}>
-            <h2 style={{ color: '#0056b3' }}>Flight Number: {flight.flight_number}</h2>
-            <div>
-              <strong>Departure:</strong>
-              <ul>
-                <li>Name: {flight.departure_airport.name}</li>
-                <li>ID: {flight.departure_airport.id}</li>
-                <li>Time: {flight.departure_airport.time}</li>
-              </ul>
-            </div>
-            <div>
-              <strong>Arrival:</strong>
-              <ul>
-                <li>Name: {flight.arrival_airport.name}</li>
-                <li>ID: {flight.arrival_airport.id}</li>
-                <li>Time: {flight.arrival_airport.time}</li>
-              </ul>
-            </div>
-          </li>
+  // Helper function to format the trip plan with HTML line breaks
+  const formatTripPlan = (plan) => {
+    return (
+      <>
+        {Object.entries(plan).map(([day, activities], index) => (
+          <div key={index}>
+            <strong>{day}</strong>
+            <ul>
+              {activities.map((activity, idx) => (
+                <li key={idx}>{activity}</li>
+              ))}
+            </ul>
+            <br /> {/* Add a line break after each day's list for better separation */}
+          </div>
         ))}
-      </ul>
-    </div>
-  );
-}
+      </>
+    );
+  };
 
+  // Helper function to format the trip plan with HTML line breaks
+  function formatFlights(flights) {
+    return (
+      <div style={{ padding: '20px', fontFamily: 'Arial, sans-serif' }}>
+        <h1>Flight Details</h1>
+        <ul style={{ listStyle: 'none', padding: 0 }}>
+          {flights.map((flight, index) => (
+            <li key={index} style={{ marginBottom: '20px', border: '1px solid #ccc', padding: '10px' }}>
+              <h2 style={{ color: '#0056b3' }}>Flight Number: {flight.flight_number}</h2>
+              <div>
+                <strong>Departure:</strong>
+                <ul>
+                  <li>Name: {flight.departure_airport.name}</li>
+                  <li>ID: {flight.departure_airport.id}</li>
+                  <li>Time: {flight.departure_airport.time}</li>
+                </ul>
+              </div>
+              <div>
+                <strong>Arrival:</strong>
+                <ul>
+                  <li>Name: {flight.arrival_airport.name}</li>
+                  <li>ID: {flight.arrival_airport.id}</li>
+                  <li>Time: {flight.arrival_airport.time}</li>
+                </ul>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
+    );
+  }
+
+  // Helper function to format the trip plan with HTML line breaks
+  function formatHotel(hotel) {
+    return (
+      <div style={{ padding: '20px', fontFamily: 'Arial, sans-serif' }}>
+        <h1>Hotel Details</h1>
+        <ul style={{ listStyle: 'none', padding: 0 }}>
+          <div>
+            <ul style={{ marginBottom: '20px', border: '1px solid #ccc', padding: '10px' }}>
+              <li>Name: {hotel["name"]}</li>
+              <li>Check in time: {hotel["check_in_time"]}</li>
+              <li>Check out time: {hotel["check_out_time"]}</li>
+            </ul>
+          </div>
+        </ul>
+      </div>
+    );
+  }
 
 
   return (
@@ -152,8 +169,8 @@ function formatFlights(flights) {
         <div key={index}>
           <h2>{destination}</h2>
           <p>{formatFlights(info[0])}</p>
-          {/* <p>Hotel Info: {info[1]}</p> */}
-          <p>Price: {info[2]}</p>
+          <p>{formatHotel(info[1])}</p>
+          <h1>Price: {info[2]}</h1>
           <button onClick={() => handleSelectDestination(destination)}>Select This Destination</button>
         </div>
       ))}

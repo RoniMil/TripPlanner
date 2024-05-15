@@ -20,7 +20,7 @@ app.add_middleware(
 )
 
 OPENAI_API_KEY = "sk-proj-qBbquYjeeRcbwcs8C1IHT3BlbkFJLZHyfNMDcKE3xW9wWaNr"
-SERPAPI_API_KEY = "7d278715b0f786d37f8acd830faf6519cfe97706360de96564488c2f9593edbd"
+SERPAPI_API_KEY = "34c3808175a1ca8a9306b7da739366e293f1f08f4c591329551edf8bc353f8c7"
 SEARCH_PROMPT = "suggest me a place to visit in the month: {month} and for the trip type: {trip_type}. return only the location AS A STRING without further information. THE PLACE MUST NOT BE IN THE FOLLOWING LIST: {cur_locations}"
 AIRPORT_PROMPT = "Give me the international airport codes for {location}. RETURN ONLY THE CODES AND NOTHING ELSE"
 
@@ -115,7 +115,7 @@ def get_valid_trips(
     trips = {}
 
     # continues search while there are less than 5 trips fitting the search parameters
-    while len(trips) < 1:
+    while len(trips) < 5:
         destination = get_trip_suggestion(seen_destinations, month, trip_type)
         seen_destinations.append(destination)
         airports = search_airports(destination)
