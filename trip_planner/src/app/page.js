@@ -33,10 +33,11 @@ export default function Home() {
 
   const handleSelectDestination = async (destination) => {
     setSelectedDestination(destination);
-    // Assuming the API key is stored in an environment variable for development purposes
+    setDestinations([]); // Clear all other destinations
+  
     const apiKey = OPENAI_API_KEY;
     const prompt = `Create a daily plan for a trip to ${destination} from ${formData.startDate} to ${formData.endDate}.`;
-
+  
     try {
       const response = await fetch('https://api.openai.com/v1/chat/completions', {
         method: 'POST',
@@ -60,6 +61,7 @@ export default function Home() {
       console.error('Error fetching daily plan:', error);
     }
   };
+  
 
   return (
     <div>
