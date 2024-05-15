@@ -37,8 +37,7 @@ export default function Home() {
     setSelectedDestination(destination);
     setDestinations([]); // Clear all other destinations
 
-    const tripPrompt = `Create a daily plan for a trip to ${destination} from ${formData.startDate} to ${formData.endDate}. Please give the plan in a list where each element is a day. SEPARATE EACH DAY WITH A NEWLINE.`;
-
+    const tripPrompt = `Create a daily plan for a trip to ${destination} from ${formData.startDate} to ${formData.endDate}. Please give the plan in a JSON format in which the key is: Day x where x is the day number and the value is a list of 3 bullets describing the day.`;
     try {
       const planResponse = await fetch('https://api.openai.com/v1/chat/completions', {
         method: 'POST',
@@ -52,7 +51,7 @@ export default function Home() {
         })
       });
       const planData = await planResponse.json();
-      setTripPlan(planData.choices[0].message['content']);
+      setTripPlan(JSON.parse(planData.choices[0].message['content']));
       const imagePrompts = `Images depicting ${formData.tripType} trip to ${destination} from ${formData.startDate} to ${formData.endDate}`;
       const images = await fetchImages(imagePrompts);
       setImages(images);  // Assuming you have a state to store images
@@ -83,12 +82,58 @@ export default function Home() {
     }
   };
 
-  // Helper function to format the trip plan with HTML line breaks
-  const formatTripPlan = (plan) => {
-    return plan.split('\n').map((line, index) => (
-      <p key={index}>{line}</p>
-    ));
-  };
+// Helper function to format the trip plan with HTML line breaks
+const formatTripPlan = (plan) => {
+  return (
+    <>
+      {Object.entries(plan).map(([day, activities], index) => (
+        <div key={index}>
+          <strong>{day}</strong>
+          <ul>
+            {activities.map((activity, idx) => (
+              <li key={idx}>{activity}</li>
+            ))}
+          </ul>
+          <br /> {/* Add a line break after each day's list for better separation */}
+        </div>
+      ))}
+    </>
+  );
+};
+
+// Helper function to format the trip plan with HTML line breaks
+function formatFlights(flights) {
+  return (
+    <div style={{ padding: '20px', fontFamily: 'Arial, sans-serif' }}>
+      <h1>Flight Details</h1>
+      <ul style={{ listStyle: 'none', padding: 0 }}>
+        {flights.map((flight, index) => (
+          <li key={index} style={{ marginBottom: '20px', border: '1px solid #ccc', padding: '10px' }}>
+            <h2 style={{ color: '#0056b3' }}>Flight Number: {flight.flight_number}</h2>
+            <div>
+              <strong>Departure:</strong>
+              <ul>
+                <li>Name: {flight.departure_airport.name}</li>
+                <li>ID: {flight.departure_airport.id}</li>
+                <li>Time: {flight.departure_airport.time}</li>
+              </ul>
+            </div>
+            <div>
+              <strong>Arrival:</strong>
+              <ul>
+                <li>Name: {flight.arrival_airport.name}</li>
+                <li>ID: {flight.arrival_airport.id}</li>
+                <li>Time: {flight.arrival_airport.time}</li>
+              </ul>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+
 
   return (
     <div>
@@ -106,8 +151,8 @@ export default function Home() {
       {destinations.map(([destination, info], index) => (
         <div key={index}>
           <h2>{destination}</h2>
-          <p>Flight Info: {info[0]}</p>
-          <p>Hotel Info: {info[1]}</p>
+          <p>{formatFlights(info[0])}</p>
+          {/* <p>Hotel Info: {info[1]}</p> */}
           <p>Price: {info[2]}</p>
           <button onClick={() => handleSelectDestination(destination)}>Select This Destination</button>
         </div>

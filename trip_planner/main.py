@@ -115,7 +115,7 @@ def get_valid_trips(
     trips = {}
 
     # continues search while there are less than 5 trips fitting the search parameters
-    while len(trips) < 5:
+    while len(trips) < 1:
         destination = get_trip_suggestion(seen_destinations, month, trip_type)
         seen_destinations.append(destination)
         airports = search_airports(destination)
@@ -133,7 +133,7 @@ def get_valid_trips(
             # found hotel fitting the destination returned by query
             if hotel_info:
                 trips[destination] = (
-                    flight_info,
+                    flight_info["flights"],
                     hotel_info,
                     int(flight_info["price"])
                     + int(re.sub(r"[^\d]", "", hotel_info["total_rate"]["lowest"])),
@@ -146,7 +146,7 @@ def get_valid_trips(
 # call for example http://127.0.0.1:8000/?start_date=1&end_date=2&budget=3&trip_type=4
 @app.get("/")
 def plan_trip(start_date: str, end_date: str, budget: str, trip_type: str):
-    debug = True
+    debug = False
 
     month = datetime.strptime(start_date, "%Y-%m-%d").strftime("%B")
 
