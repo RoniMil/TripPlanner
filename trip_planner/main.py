@@ -3,6 +3,9 @@ from datetime import datetime
 import re
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from dotenv import load_dotenv
+import os
+
 
 # start api
 app = FastAPI()
@@ -19,8 +22,10 @@ app.add_middleware(
     allow_headers=["*"],  # Allows all headers
 )
 
-OPENAI_API_KEY = "sk-proj-qBbquYjeeRcbwcs8C1IHT3BlbkFJLZHyfNMDcKE3xW9wWaNr"
-SERPAPI_API_KEY = "34c3808175a1ca8a9306b7da739366e293f1f08f4c591329551edf8bc353f8c7"
+openAI_key = os.getenv("OPENAI_API_KEY")
+serpAPI_key = os.getenv("SERPAPI_API_KEY")
+
+
 SEARCH_PROMPT = "suggest me a place to visit in the month: {month} and for the trip type: {trip_type}. return only the location AS A STRING without further information. THE PLACE MUST NOT BE IN THE FOLLOWING LIST: {cur_locations}"
 AIRPORT_PROMPT = "Give me the international airport codes for {location}. RETURN ONLY THE CODES AND NOTHING ELSE"
 
@@ -29,7 +34,7 @@ AIRPORT_PROMPT = "Give me the international airport codes for {location}. RETURN
 def get_trip_suggestion(cur_locations, month, trip_type):
     response = requests.post(
         "https://api.openai.com/v1/chat/completions",
-        headers={"Authorization": f"Bearer {OPENAI_API_KEY}"},
+        headers={"Authorization": f"Bearer {openAI_key}"},
         json={
             "model": "gpt-3.5-turbo",
             "messages": [
@@ -49,7 +54,7 @@ def get_trip_suggestion(cur_locations, month, trip_type):
 def search_airports(locations):
     response = requests.post(
         "https://api.openai.com/v1/chat/completions",
-        headers={"Authorization": f"Bearer {OPENAI_API_KEY}"},
+        headers={"Authorization": f"Bearer {openAI_key}"},
         json={
             "model": "gpt-3.5-turbo",
             "messages": [
@@ -74,7 +79,7 @@ def search_flights(airports, outbound_date, return_date, max_price):
             "max_price": max_price,
             "departure_id": "TLV",
             "arrival_id": airports,
-            "api_key": SERPAPI_API_KEY,
+            "api_key": serpAPI_key,
         },
     )
     res = response.json()
@@ -96,7 +101,7 @@ def search_hotels(destination, check_in_date, check_out_date, max_price):
             "check_in_date": check_in_date,
             "check_out_date": check_out_date,
             "max_price": max_price,
-            "api_key": SERPAPI_API_KEY,
+            "api_key": serpAPI_key,
         },
     )
     res = response.json()

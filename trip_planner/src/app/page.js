@@ -1,7 +1,11 @@
 'use client'
 import { useState } from 'react';
+import dotenv from 'dotenv';
 
-const OPENAI_API_KEY = "sk-proj-qBbquYjeeRcbwcs8C1IHT3BlbkFJLZHyfNMDcKE3xW9wWaNr";
+// Load environment variables from .env file
+dotenv.config();
+
+const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 
 export default function Home() {
   const [formData, setFormData] = useState({
