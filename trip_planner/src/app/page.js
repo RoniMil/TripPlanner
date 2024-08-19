@@ -1,6 +1,5 @@
 'use client'
 import { useState } from 'react';
-import dotenv from 'dotenv';
 
 // Load environment variables from .env file
 dotenv.config();

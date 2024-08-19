@@ -3,7 +3,6 @@ from datetime import datetime
 import re
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from dotenv import load_dotenv
 import os
 
 
@@ -22,8 +21,8 @@ app.add_middleware(
     allow_headers=["*"],  # Allows all headers
 )
 
-openAI_key = os.getenv("OPENAI_API_KEY")
-serpAPI_key = os.getenv("SERPAPI_API_KEY")
+openAI_key = os.environ.get('OPENAI_API_KEY')
+serpAPI_key = os.environ.get('SERPAPI_API_KEY')
 
 
 SEARCH_PROMPT = "suggest me a place to visit in the month: {month} and for the trip type: {trip_type}. return only the location AS A STRING without further information. THE PLACE MUST NOT BE IN THE FOLLOWING LIST: {cur_locations}"
